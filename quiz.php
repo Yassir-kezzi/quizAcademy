@@ -1,8 +1,32 @@
 <?php
 
-require 'connexion.php';  
+require 'connexion.php';
 session_start();
-echo "Welcome " . $_SESSION['user'];
+echo "Welcome " . $_SESSION['user'] . "<br>"; 
+
+if (!isset($_SESSION['user'])) {
+    // Redirect to login if user is not logged in
+    header("Location: index.php");
+    exit();
+}
+
+$username = $_SESSION['user'];
+
+// Get full user info
+$stmt = $pdo->prepare("SELECT * FROM users WHERE userName = ?");
+$stmt->execute([$username]);
+$userInfo = $stmt->fetch(PDO::FETCH_OBJ);
+
+if ($userInfo) {
+    $userEmail = $userInfo->userEmail ;
+    $userGroupe = $userInfo->userGroupe ;
+    echo "email : $userEmail <br>";
+    echo "groupe : $userGroupe <br>";
+
+} else {
+    echo "User not found.";
+}
+
 $query = "select * from subjects";
 $subjects = $pdo->query($query)->fetchAll(PDO::FETCH_OBJ);
 $questions = []; // Initialize $questions as an empty array
@@ -41,7 +65,7 @@ if (isset($_GET['subject_Id'])) {
         
         <?php if (!empty($questions)): ?>
         <div class="quiz-container">
-            <form method="post">
+            <form method="post" action="quiz.php">
                 <?php
                 $currentQuestionId = null;
                 foreach($questions as $index => $question): 

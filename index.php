@@ -1,5 +1,3 @@
-
-
 <?php 
 
 require 'connexion.php';
@@ -10,18 +8,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
 
 
- $stmt = $pdo->prepare("SELECT userName,userPassword FROM users WHERE userName = ? AND userPassword = ?");
+ $stmt = $pdo->prepare("SELECT * FROM users WHERE userName = ? AND userPassword = ?");
     $stmt->execute([$username, $password]);
-     $result = $stmt->fetchAll(PDO::FETCH_OBJ); 
+     $result = $stmt->fetch(PDO::FETCH_OBJ); 
 
-if (count($result) > 0 ){
-    $_SESSION['user'] = $result['userName'];
+if ($result) {
+    $_SESSION['user'] = $result->userName;
     header("Location: quiz.php");
-        exit(); 
+    exit();
+} else {
+?>
+<p id="log-failed"> username or password  incorrect</p>
+<?php
 }
-else {
-    echo "login failed";
-};
 }
 ?>
 
@@ -30,14 +29,25 @@ else {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>login</title>
+    <link rel="stylesheet" href="./style/login.css">
 </head>
 <body>
-    <div class="login">
-        <form action="index.php" method="post">
-            <input type="text" name="username">
-            <input type="password" name="password">
-            <input type="submit" value="login">
+    <div class="login-form">
+
+        <form class="form" action="index.php" method="post">
+            <p class="form-title">Sign in to your account</p>
+            <div class="input-container">
+                <input type="text" name="username" placeholder="Enter username">
+                <span>
+                    </span>
+                </div>
+                <div class="input-container">
+                    <input type="password" name="password" placeholder="Enter password">
+                </div>
+                <button type="submit" class="submit">
+                    Sign in
+                </button>
         </form>
     </div>
 </body>
