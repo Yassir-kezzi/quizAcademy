@@ -1,10 +1,10 @@
 <?php
 $host = 'localhost';
-$dbname = 'quizacademy';  
-$username = 'root';      
-$password = '';          
+$dbName = 'quizacademy';  
+$dbUsername = 'root';      
+$dbPassword = '';          
 
-$pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+$pdo = new PDO("mysql:host=$host;dbname=$dbName;charset=utf8", $dbUsername, $dbPassword);
 
 
 
