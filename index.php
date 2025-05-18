@@ -8,9 +8,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST["password"];
 
 
- $stmt = $pdo->prepare("SELECT * FROM users WHERE userName = ? AND userPassword = ?");
+$stmt = $pdo->prepare("SELECT * FROM users WHERE userName = ? AND userPassword = ?");
     $stmt->execute([$username, $password]);
-     $result = $stmt->fetch(PDO::FETCH_OBJ); 
+    $result = $stmt->fetch(PDO::FETCH_OBJ); 
 
 if ($result) {
     $_SESSION['user'] = $result->userName;

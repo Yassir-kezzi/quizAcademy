@@ -31,11 +31,11 @@ $query = "select * from subjects";
 $subjects = $pdo->query($query)->fetchAll(PDO::FETCH_OBJ);
 $questions = []; // Initialize $questions as an empty array
 
-if (isset($_GET['subject_Id'])) {
-    $query = "SELECT a.question_Id, q.question_Name, a.answer_Id, a.answer_Name 
+if (isset($_GET['subjectId'])) {
+    $query = "SELECT a.questionId, q.questionName, a.answerId, a.answerName 
         FROM questions q
-        JOIN answers a ON a.question_Id = q.question_Id
-        WHERE q.subject_Id = " . $_GET['subject_Id'];
+        JOIN answers a ON a.questionId = q.questionId
+        WHERE q.subjectId = " . $_GET['subjectId'];
     $questions = $pdo->query($query)->fetchAll(PDO::FETCH_OBJ);
 }
 ?>
@@ -57,8 +57,8 @@ if (isset($_GET['subject_Id'])) {
         
         <div class="subject-selection">
             <?php foreach($subjects as $subject): ?>
-                <a href="quiz.php?subject_Id=<?= $subject->subject_Id ?>">
-                    <button class="subject-btn"><?= htmlspecialchars($subject->subject_Name) ?></button>
+                <a href="quiz.php?subjectId=<?= $subject->subjectId ?>">
+                    <button class="subject-btn"><?= htmlspecialchars($subject->subjectName) ?></button>
                 </a>
             <?php endforeach; ?>
         </div>
@@ -69,30 +69,30 @@ if (isset($_GET['subject_Id'])) {
                 <?php
                 $currentQuestionId = null;
                 foreach($questions as $index => $question): 
-                    if ($currentQuestionId !== $question->question_Id):
+                    if ($currentQuestionId !== $question->questionId):
                         if ($currentQuestionId !== null):
                             echo '</div></div>'; // Close previous answer-options and question-card
                         endif;
-                        $currentQuestionId = $question->question_Id;
+                        $currentQuestionId = $question->questionId;
                 ?>
                     <div class="question-card">
                         <div class="question-text">
-                            <?= htmlspecialchars($question->question_Name) ?>
+                            <?= htmlspecialchars($question->questionName) ?>
                         </div>
                         <div class="answer-options">
                             <div class="answer-option">
                                 <label>
-                                    <input type="radio" name="q<?= $question->question_Id ?>" 
-                                        value="<?= $question->answer_Id ?>">
-                                    <?= htmlspecialchars($question->answer_Name) ?>
+                                    <input type="radio" name="q<?= $question->questionId ?>" 
+                                        value="<?= $question->answerId ?>">
+                                    <?= htmlspecialchars($question->answerName) ?>
                                 </label>
                             </div>
                 <?php else: ?>
                             <div class="answer-option">
                                 <label>
-                                    <input type="radio" name="q<?= $question->question_Id ?>" 
-                                        value="<?= $question->answer_Id ?>">
-                                    <?= htmlspecialchars($question->answer_Name) ?>
+                                    <input type="radio" name="q<?= $question->questionId ?>" 
+                                        value="<?= $question->answerId ?>">
+                                    <?= htmlspecialchars($question->answerName) ?>
                                 </label>
                             </div>
                 <?php endif; ?>
