@@ -27,6 +27,7 @@ if ($result) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="images/Q-A.png" type="image/x-png">
     <title>login_page</title>
     <link rel="stylesheet" href="./style/login.css">
 </head>

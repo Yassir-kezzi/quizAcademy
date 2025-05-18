@@ -44,9 +44,10 @@ if (isset($_GET['subjectId'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Academy</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="images/Q-A.png" type="image/x-png">
     <link rel="stylesheet" href="./style/style.css">
+    <title>Quiz Academy</title>
 </head>
 <body>
     <div class="container">
@@ -106,6 +107,3 @@ if (isset($_GET['subjectId'])) {
     </div>
 </body>
 </html>
-
-
-<!-- hello yassir -->
