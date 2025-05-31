@@ -47,6 +47,7 @@ if (isset($_GET['subjectId'])) {
     if (isset($_POST['submit'])) {
         $submitted = true;
         $questionIds = array_unique(array_column($questions, 'questionId'));
+        $totalQuestions = count($questionIds); 
 
         foreach ($questionIds as $questionId) {
             $inputName = "q" . $questionId;
@@ -69,6 +70,18 @@ if (isset($_GET['subjectId'])) {
                 ];
             }
         }
+        // enregistrement the score
+        if ($totalQuestions > 0) {
+            $note = ($score / $totalQuestions) * 10;
+        } else {
+            $note = 0.00;
+        }
+        
+        $examDate = date('Y-m-d'); 
+
+        // Préparer et exécuter la requête d'insertion
+        $stmt = $pdo->prepare("INSERT INTO scores (subjectId, note, examDate) VALUES (?, ?, ?)");
+        $stmt->execute([$subjectId, $note, $examDate]);
     }
 }
 ?>
