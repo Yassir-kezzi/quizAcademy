@@ -37,9 +37,9 @@ if (isset($_GET['subjectId'])) {
     $subjectId = (int)$_GET['subjectId'];
 
     $stmt = $pdo->prepare("SELECT a.questionId, q.questionName, a.answerId, a.answerName 
-                           FROM questions q
-                           JOIN answers a ON a.questionId = q.questionId
-                           WHERE q.subjectId = ?");
+                        FROM questions q
+                        JOIN answers a ON a.questionId = q.questionId
+                        WHERE q.subjectId = ?");
     $stmt->execute([$subjectId]);
     $questions = $stmt->fetchAll(PDO::FETCH_OBJ);
 
@@ -70,7 +70,7 @@ if (isset($_GET['subjectId'])) {
                 ];
             }
         }
-        // enregistrement the score
+        // Save Score
         if ($totalQuestions > 0) {
             $note = ($score / $totalQuestions) * 10;
         } else {
