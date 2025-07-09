@@ -7,8 +7,6 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-echo "Welcome " . $_SESSION['user'] . "<br>";
-
 $username = $_SESSION['user'];
 
 // Get full user info
@@ -19,8 +17,7 @@ $userInfo = $stmt->fetch(PDO::FETCH_OBJ);
 if ($userInfo) {
     $userEmail = $userInfo->userEmail;
     $userGroupe = $userInfo->userGroupe;
-    echo "email : $userEmail <br>";
-    echo "groupe : $userGroupe <br>";
+    
 } else {
     echo "User not found.";
 }
@@ -93,53 +90,44 @@ if (isset($_GET['subjectId'])) {
     <title>Quiz Academy</title>
     <link rel="stylesheet" href="./style/style.css">
     <link rel="shortcut icon" href="images/Q-A.png" type="image/x-png">
-    <style>
-        .score-message {
-            font-family: 'Poppins', sans-serif;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            background-color: #f0f0f0;
-            border: 2px solid #007bff;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #007bff;
-            border-radius: 10px;
-        }
-        .correct {
-            background-color: #d4edda;
-            border: 2px solid #28a745;
-            border-radius: 8px;
-            padding: 5px;
-            margin: 4px 0;
-        }
-        .incorrect {
-            background-color: #f8d7da;
-            border: 2px solid #dc3545;
-            border-radius: 8px;
-            padding: 5px;
-            margin: 4px 0;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Quiz Academy</h1>
+            <div class="logo">
+                <img src="images/Q-A.png" alt="Quiz Academy Logo">
+                <h1>Quiz Academy</h1>
+            </div>
+            <div class="user-info-header">
+                <i class="fas fa-user-circle"></i>
+                <span>Welcome, <?= htmlspecialchars($_SESSION['user']) ?></span>
+            </div>
         </header>
+
+        <div class="user-details-card">
+            <?php if ($userInfo): ?>
+                <p><i class="fas fa-envelope"></i> Email: <?= htmlspecialchars($userEmail) ?></p>
+                <p><i class="fas fa-users"></i> Group: <?= htmlspecialchars($userGroupe) ?></p>
+            <?php endif; ?>
+        </div>
 
         <?php if ($submitted): ?>
             <div class="score-message">
-                <p>you got <?= $score ?> points from<?= count(array_unique(array_column($questions, 'questionId'))) ?> </p>
+                <p>You got <?= $score ?> points out of <?= count(array_unique(array_column($questions, 'questionId'))) ?> questions.</p>
             </div>
         <?php endif; ?>
 
         <div class="subject-selection">
-            <?php foreach ($subjects as $subject): ?>
-                <a href="quiz.php?subjectId=<?= $subject->subjectId ?>">
-                    <button class="subject-btn"><?= htmlspecialchars($subject->subjectName) ?></button>
-                </a>
-            <?php endforeach; ?>
+            <h2>Choose a Subject</h2>
+            <div class="subject-buttons-wrapper">
+                <?php foreach ($subjects as $subject): ?>
+                    <a href="quiz.php?subjectId=<?= $subject->subjectId ?>">
+                        <button class="subject-btn"><i class="fas fa-book"></i> <?= htmlspecialchars($subject->subjectName) ?></button>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
 
         <?php if (!empty($questions)): ?>
@@ -156,6 +144,7 @@ if (isset($_GET['subjectId'])) {
                     ?>
                         <div class="question-card">
                             <div class="question-text">
+                                <span class="question-number">Question <?= array_search($question->questionId, array_unique(array_column($questions, 'questionId'))) + 1 ?>:</span>
                                 <?= htmlspecialchars($question->questionName) ?>
                             </div>
                             <div class="answer-options">
@@ -170,7 +159,7 @@ if (isset($_GET['subjectId'])) {
                     if ($submitted) {
                         if ($isCorrectAnswer) {
                             $class = 'correct';
-                        } elseif ($isSelected) {
+                        } elseif ($isSelected && !$isCorrectAnswer) { // Only mark incorrect if selected and not correct
                             $class = 'incorrect';
                         }
                     }
@@ -181,12 +170,25 @@ if (isset($_GET['subjectId'])) {
                                     <?= $isSelected ? 'checked' : '' ?>
                                     <?= $submitted ? 'disabled' : '' ?>>
                                 <?= htmlspecialchars($question->answerName) ?>
+                                <?php if ($submitted): ?>
+                                    <?php if ($isCorrectAnswer): ?>
+                                        <i class="fas fa-check-circle correct-icon"></i>
+                                    <?php elseif ($isSelected && !$isCorrectAnswer): ?>
+                                        <i class="fas fa-times-circle incorrect-icon"></i>
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </label>
                         </div>
                     <?php endforeach; ?>
                     <?php if (!empty($questions)) echo '</div></div>'; ?>
 
-                    <button type="submit" name="submit" class="submit-btn">submit answers</button>
+                    <?php if (!$submitted): ?>
+                        <button type="submit" name="submit" class="submit-btn">Submit Answers <i class="fas fa-paper-plane"></i></button>
+                    <?php else: ?>
+                        <div class="quiz-completed-message">
+                            Quiz Completed! Review your answers above.
+                        </div>
+                    <?php endif; ?>
                 </form>
             </div>
         <?php endif; ?>
